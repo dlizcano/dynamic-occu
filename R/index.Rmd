@@ -30,61 +30,48 @@ library(markdown)
 # bibliography: C:/Users/diego.lizcano/Box Sync/CodigoR/Biodiv_Caqueta/bib/refrences.bib
 ```
 
-
 # Modelo de Ocupación Dinámico
-## Diego J. Lizcano
 
-Este documento contiene un ejemplo del modelo de ocupación de una sola especie y varias temporadas. Este modelo fue descrito por MacKenzie et. al (2003) en: 
+
+
+Este documento contiene un ejemplo del modelo de ocupación de una sola especie y varias temporadas. Este modelo fue descrito por MacKenzie et. al (2003) en:
 
 > MacKenzie, D. I., J. D. Nichols, J. E. Hines, M. G. Knutson, and A. B. Franklin. 2003. Estimating site occupancy, colonization, and local extinction when a species is detected imperfectly. Ecology 84:2200–2207.
 
-
-![image](C:/Users/usuario/Desktop/Curso_Salvador_Multi_Season/img/fig1.jpg)
+![](https://dlizcano.github.io/occu_multi_season//img/fig1.jpg)
 
 ## Parámetros Adicionales
 
-Este modelo incluye dos parámetros adicionales que representan la colonización y extinción de cada sitio. Estos dos parámetros adicionales pueden ser modelados con covariables que varían año a año. 
+Este modelo incluye dos parámetros adicionales que representan la colonización y extinción de cada sitio. Estos dos parámetros adicionales pueden ser modelados con covariables que varían año a año.
 
-Antes de entrar en materia con el modelo dinámico vale la pena que revisemos el modelo básico de ocupación. 
+Antes de entrar en materia con el modelo dinámico vale la pena que revisemos el modelo básico de ocupación.
 
 ## Recordemos el Modelo estático
 
 Recordemos que el modelo básico de ocupación de MacKenzie et. al (2002), también es conocido como el modelo estático de ocupación. Este modelo se aplica a una sola especie, y por lo general en una sola temporada.
 
+![](https://dlizcano.github.io/occu_multi_season//img/Occu_Bayes.png)
 
+Donde\
+ψ es la ocupación y p la probabilidad de detección. Con\
+β como el coeficiente de la regresión para las co-variables de la ocupación y\
+α el coeficiente de regresión para las co-variables de la detección.
 
-![image](C:/Users/usuario/Desktop/Curso_Salvador_Multi_Season/img/Occu_Bayes.png)
-
-
-Donde  
-ψ
-  es la ocupación y p la probabilidad de detección. Con  
-β
-  como el coeficiente de la regresión para las co-variables de la ocupación y  
-α
-  el coeficiente de regresión para las co-variables de la detección.
-
-
-
-Si desean conocer en detalle el modelo estático y saber más del poder y potencial de las simulaciones en ecología, les recomiendo seguir el  [Tutorial Ubicado en este enlace](https://dlizcano.github.io/IntroOccuBook/example.html).
-
+Si desean conocer en detalle el modelo estático y saber más del poder y potencial de las simulaciones en ecología, les recomiendo seguir el [Tutorial Ubicado en este enlace](https://dlizcano.github.io/IntroOccuBook/example.html).
 
 ## Recordemos la forma de la distribución Bernoulli!
 
 La distribución de Bernoulli (o distribución dicotómica), nombrada así por el matemático suizo Jacob Bernoulli (1655-1705).
 
-![image](C:/Users/usuario/Desktop/Curso_Salvador_Multi_Season/img/jacob_bernoulli.jpg)
+![](https://dlizcano.github.io/occu_multi_season/img/jacob_bernoulli.jpg)
 
 Esta es una distribución de probabilidad discreta, que toma valor 1 para la probabilidad de éxito (p) y valor 0 para la probabilidad de fracaso (q=1-p).
 
-La distribución de Bernoulli es un caso particular de la distribución binomial, pero con solo dos posibles resultados (éxito o fracaso) unos y ceros. 
-
+La distribución de Bernoulli es un caso particular de la distribución binomial, pero con solo dos posibles resultados (éxito o fracaso) unos y ceros.
 
 > El proceso Bernoulli es el más simple proceso aleatorio que existe! Imagínemelo como algo tan sencillo como una secuencia de lanzamientos de una moneda. Donde un solo lanzamiento es un "trial" y muchos lanzamientos componen el proceso.
- 
 
 Usemos el siguiente código ejecutándolo varias veces y cambiando los parámetros para entender su efecto en el resultado.
-
 
 ```{r fig.width=6, fig.height=6, fig.align='center'}
 
@@ -105,64 +92,59 @@ ggplot(daber, aes(x=estimado)) +
 
 Si desean conocer más detalles de la distribución Bernoulli les recomiendo la muy buena explicación de [jbstatistics](https://www.youtube.com/watch?v=bT1p5tJwn_0)
 
+{{< video https://www.youtube.com/watch?v=bT1p5tJwn_0
+    title='Introduction to the Bernoulli Distribution' 
+>}}
+
 Y si quieren aún más detalles visiten la clase del profesor [Tsitsiklis](https://www.youtube.com/watch?v=gMTiAeE0NCw) del MIT.
 
+## El algebra y los parámetros de los modelos
 
+### Modelo estatico:
 
-## Los Parámetros de los modelos
+$z_{i} \sim Bernoulli (\psi_{i})$ Proceso Ecológico
 
-### Modelo estatico: 
-
-
-$z_{i} \sim Bernoulli (\psi_{i})$  Proceso Ecológico
-
-$y_{ij} \sim Bernoulli (z_{i} * p_{ij})$  Proceso de Observación
+$y_{ij} \sim Bernoulli (z_{i} * p_{ij})$ Proceso de Observación
 
 con sitio i durante el muestreo j
 
-#### De forma Lineal 
+#### De forma Lineal
 
 logit(Ψi) = α0 + α1xi1 + . . . + αUxiU.
 
 logit(pij) = β0 + β1xi1 + . . . + βUxiU + βU+1yij1 + . . . + βU+V yijV.
 
+### Algebra del Modelo Dinámico
 
-### Modelo Dinámico
+$z_{it} \sim Bernoulli (\psi_{i,t})$ Proceso Ecológico
 
-$z_{it} \sim Bernoulli (\psi_{i,t})$  Proceso Ecológico
-
-$y_{ijt} \sim Bernoulli (z_{i} * p_{i,tj})$  Proceso de Observación
+$y_{ijt} \sim Bernoulli (z_{i} * p_{i,tj})$ Proceso de Observación
 
 con sitio i durante el muestreo j en el tiempo t (años)
 
 ### Modelo Dinámico considerando colonización y extinción
 
-![image](C:/Users/usuario/Desktop/Curso_Salvador_Multi_Season/img/colext.png)
+![](https://dlizcano.github.io/occu_multi_season/img/colext.png)
 
+$z_{it} \sim Bernoulli (z_{i,t-1\phi it } + (1-z_{i,t-1}) \gamma_{i,t})$ Proceso Ecológico
 
-
-$z_{it} \sim Bernoulli (z_{i,t-1\phi it } + (1-z_{i,t-1}) \gamma_{i,t})$  Proceso Ecológico
-
-$y_{ijt} \sim Bernoulli (z_{it} * p_{ijt})$  Proceso de Observación
-
+$y_{ijt} \sim Bernoulli (z_{it} * p_{ijt})$ Proceso de Observación
 
 #### De forma Lineal
 
 logit(Ψi,1) = α0 + α1xi1 + . . . + αUxiU.
 
-Ψi,t|zi,t−1 = zi,t−1 × (1 −$\epsilon_{i}$,t−1) + (1 − zi,t−1) × $\gamma_{i}$,t−1, for t > 1.
+Ψi,t\|zi,t−1 = zi,t−1 × (1 −$\epsilon_{i}$,t−1) + (1 − zi,t−1) × $\gamma_{i}$,t−1, for t \> 1.
 
+## La función Colext dentro del paquete unmarked
 
-## La función Colext del paquete unmarked
-
-![image](C:/Users/usuario/Desktop/Curso_Salvador_Multi_Season/img/unmarked.png)
+![](https://dlizcano.github.io/occu_multi_season/img/unmarked.png)
 
 # Veamos una simulacion con la función Colext de unmarked
 
-
 ## Modelo de Ocupación Diámico con datos simulados
 
-Primero generamos un conjunto de datos simple y simulado con valores específicos de año específicos para los parámetros, así como especificaciones de diseño, es decir, número de sitios, años y encuestas por año. 
+Primero generamos un conjunto de datos simple y simulado con valores específicos de año específicos para los parámetros, así como especificaciones de diseño, es decir, número de sitios, años y encuestas por año.
 
 Luego, veremos cómo ajustar un modelo de ocupación dinámico con dependencia del año en los parámetros de probabilidad de colonización, extinción y detección.
 
@@ -210,8 +192,6 @@ for (k in 2:T){
 
 ```
 
-
-
 Hemos generado una sola realización del sistema estocástico así definido. La Figura 1 ilustra la cuestión fundamental de la detección imperfecta: la proporción real de sitios ocupados difiere mucho de la proporción observada de sitios ocupados, y debido a que p varía entre años, los datos observados no pueden usarse como un índice válido del parámetro de interés ψi.
 
 ```{r}
@@ -231,11 +211,9 @@ legend(1, 0.6, c("truth", "observed"),
 
 ```
 
-
 ## Analizando los datos
 
 Para analizar este conjunto de datos con un modelo de ocupación dinámico sin marcar, primero cargamos el paquete, y luego a continuación, formateamos los datos de detección / no detección de una matriz tridimensional (como se genera) en una matriz bidimensional con M filas. Es decir, colocamos las tablas de datos anuales (los segmentos de la matriz 3-D anterior) de lado para producir un diseño "amplio" de los datos. Posteriormente, creamos una matriz que indica el año en que se muestreo cada sitio.
-
 
 ```{r}
 library(unmarked)
@@ -263,7 +241,7 @@ summary(simUMF)
 
 ## Construcción y ajuste de modelos
 
-Estamos listos para adaptar algunos modelos de ocupación dinámica. Ajustaremos un modelo con valores constantes para todos los parámetros (modelo nulo) y otro con dependencia total del tiempo para la probabilidad de colonización, extinción y detección. 
+Estamos listos para adaptar algunos modelos de ocupación dinámica. Ajustaremos un modelo con valores constantes para todos los parámetros (modelo nulo) y otro con dependencia total del tiempo para la probabilidad de colonización, extinción y detección.
 
 ```{r}
  # Model with all constant parameters  
@@ -284,7 +262,6 @@ El tiempo de cálculo fue de solo unos segundos. Tenga en cuenta que todos los p
 
 Alternativamente, podemos usar backTransform, que calcula los errores estándar usando el método delta. Los intervalos de confianza también se obtienen fácilmente utilizando la función con ﬁ n. Primero nos recordamos los nombres de los parámetros, que pueden usarse como argumentos para estas funciones.
 
-
 ```{r}
 plogis(-0.813) 
 
@@ -296,10 +273,10 @@ confint(backTransform(m0, type="psi"))  # intervalos
  
 
 ```
-Luego  ajustamos el modelo de ocupación dinámica con dependencia total del año en los parámetros que describen la dinámica de ocupación y también en la detección. Este es el mismo modelo bajo el cual generamos el conjunto de datos, por lo que esperaríamos estimaciones precisas. 
+
+Luego ajustamos el modelo de ocupación dinámica con dependencia total del año en los parámetros que describen la dinámica de ocupación y también en la detección. Este es el mismo modelo bajo el cual generamos el conjunto de datos, por lo que esperaríamos estimaciones precisas.
 
 Por defecto en R, un factor como el año en este análisis, se parametriza en términos de una intersección y efectos que representan diferencias. Esto significaría que el parámetro para el primer año es la intersección y los efectos denotarían las diferencias entre los valores de los parámetros en todos los demás años, en relación con el valor del parámetro en el primer año, que sirve como nivel de referencia. Este tratamiento o la parametrización de los efectos es útil para evaluar las diferencias. Para una presentación simple, una parametrización de medias es más práctica. Se puede especificar agregando un -1 a la fórmula para los parámetros dependientes del tiempo
-
 
 ```{r}
 
@@ -313,8 +290,6 @@ m1
 
 
 ```
-
-
 
 ## Selección de Modelos
 
@@ -330,15 +305,13 @@ ms
   
 ```
 
-
 ## Predicción y Graficas
 
-Nuevamente, todas las estimaciones se muestran en la escala logit. Las estimaciones de transformación inversa cuando hay covariables, como el año, implican un paso adicional. Específicamente, necesitamos decir sin marcar los valores de nuestra covariable en los que queremos una estimación. Esto se puede hacer usando backTransform en combinación con linearComb, aunque puede ser más fácil de usar predict. 
+Nuevamente, todas las estimaciones se muestran en la escala logit. Las estimaciones de transformación inversa cuando hay covariables, como el año, implican un paso adicional. Específicamente, necesitamos decir sin marcar los valores de nuestra covariable en los que queremos una estimación. Esto se puede hacer usando backTransform en combinación con linearComb, aunque puede ser más fácil de usar predict.
 
 predic le permite al usuario proporcionar un marco de datos en el que cada fila representa una combinación de valores covariables de interés. A continuación, creamos los data.frames llamados nd y cada fila representa un año. Luego solicitamos estimaciones anuales de la probabilidad de extinción, colonización y detección, y las comparamos con la "verdad", es decir, los valores con los que simulamos el conjunto de datos. Tenga en cuenta que hay parámetros de extinción y colonización T-1 en este caso, por lo que no es necesario incluir el año "10" en nd.
 
-Predict es mas versatil y devuelve las predicciones junto con errores estándar e intervalos de confianza. Estos se pueden usar para crear graficas.  La función with se usa para simplificar el proceso de solicitud de las columnas de data.frame devueltas por predic.
-
+Predict es mas versatil y devuelve las predicciones junto con errores estándar e intervalos de confianza. Estos se pueden usar para crear graficas. La función with se usa para simplificar el proceso de solicitud de las columnas de data.frame devueltas por predic.
 
 ```{r}
 
@@ -394,12 +367,9 @@ with(E.det, { # Plot for detection probability: note 10 years
 
 ```
 
-
 ## Probando la bondad del ajuste del modelo
 
-
-Además de estimar la varianza de una estimación, la rutina de bootstrap paramétrica se puede usar para evaluar la bondad del ajuste. Para este propósito, una estadística de ajuste, es decir, una que compara los valores observados y esperados se evalúan utilizando el modelo ajustado original y muchos otros modelos ajustados a conjuntos de datos simulados. La simulación produce una aproximación de la distribución de la estadística de ajuste, y un valor P puede calcularse como la proporción de valores simulados mayor que el valor observado. Hosmer y col. (1997) encontraron que un estadístico χ2 funcionó razonablemente bien al evaluar la falta de ajuste para los modelos de regresión logística. No conocemos estudios que evalúen formalmente el desempeño de varias estadísticas de ajuste para modelos de ocupación dinámica, por lo que este enfoque debe considerarse experimental. Las estadísticas de ajuste aplicadas a los historiales de encuentros agregados ofrecen un enfoque alternativo (MacKenzie y Bailey 2004), pero son difíciles de implementar cuando J * T es alto y hay valores faltantes o covariables continuas.
-
+Además de estimar la varianza de una estimación, la rutina de bootstrap paramétrica se puede usar para evaluar la bondad del ajuste. Para este propósito, una estadística de ajuste, es decir, una que compara los valores observados y esperados se evalúan utilizando el modelo ajustado original y muchos otros modelos ajustados a conjuntos de datos simulados. La simulación produce una aproximación de la distribución de la estadística de ajuste, y un valor P puede calcularse como la proporción de valores simulados mayor que el valor observado. Hosmer y col. (1997) encontraron que un estadístico χ2 funcionó razonablemente bien al evaluar la falta de ajuste para los modelos de regresión logística. No conocemos estudios que evalúen formalmente el desempeño de varias estadísticas de ajuste para modelos de ocupación dinámica, por lo que este enfoque debe considerarse experimental. Las estadísticas de ajuste aplicadas a los historiales de encuentros agregados ofrecen un enfoque alternativo (MacKenzie y Bailey 2004), pero son difíciles de implementar cuando J \* T es alto y hay valores faltantes o covariables continuas.
 
 ```{r}
  chisq <- function(fm) { 
@@ -422,23 +392,19 @@ plot(pb.gof)
 
 La figura indica que, como se esperaba, el modelo de parámetro constante no se ajusta bien a los datos.
 
-
 # Modelo de Ocupación Dinámico con datos del mundo real
 
-Este analisis es un tutorial del modelo de ocupación dinámico y usa parte de los datos y el analisis que forman parte del articulo: 
+Este analisis es un tutorial del modelo de ocupación dinámico y usa parte de los datos y el analisis que forman parte del articulo:
 
 [Ahumada JA, Hurtado J, Lizcano D. 2013. Monitoring the Status and Trends of Tropical Forest Terrestrial Vertebrate Communities from Camera Trap Data: A Tool for Conservation. PLoS ONE. 8:e73707. doi:DOI: 10.1371/journal.pone.0073707.](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0073707)
 
 Utilizamos datos de trampa de cámara que la Red de Tropical Ecology Assessment and Monitoring (TEAM) recolectados de forma regular a lo largo de un transecto del Volcán Barva en Costa Rica.
 
-Mostramos cómo estos datos pueden usarse para calcular los indicadores temporales de las especies de mamíferos de interés en el área. 
+Mostramos cómo estos datos pueden usarse para calcular los indicadores temporales de las especies de mamíferos de interés en el área.
 
 Se encontraron descensos en la ocupación de algunas especies.
 
-Para este tutorial nos enfocaremos en _Dasiprocta punctata_
-
-
-
+Para este tutorial nos enfocaremos en *Dasiprocta punctata*
 
 # Información de la sesión en R.
 
